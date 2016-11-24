@@ -3,17 +3,17 @@
 <head>
 	<title>Solving TSP problem</title>
 	<script src="./data.js"></script>
-	<script src="./main.js"></script>
-</head>
+	<script src="./main.js"></script></head>
 <body>
 	<canvas id="myCanvas" width="1000" height="800" style="border:1px solid #d3d3d3;">
 	Your browser does not support the HTML5 canvas tag.</canvas>
-	<div>
+	<div style="
+    position: absolute;
+    left: 1010px;
+    top: 0;">
 		<button id="start" onclick="start()">Start</button>
-		<button id="stop" onclick="stop()">Stop</button>
-		<span id="distance"></span>
 		<span id="generationCount"></span>
-		<span id="bestDistance"></span>
+		<ul id="records"></ul>
 	</div>
 	<script type="text/javascript">
 		init();

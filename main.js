@@ -1,19 +1,19 @@
-var motherArr = [];
-var c;
-var ctx;
-var outputDistance;
-var tmpDistance;
-var startBtn;
-var distanceSpan;
-var permutationSpan;
-var populationSize = 1000;
-var data;
-var stop = false;
-var crossoverFactor = 0.4;
-var mutationFactor = 0.4;
-var actualBest;
-var countSpan;
-var maxGenerations = 200;
+var motherArr = [],
+	c,
+	ctx,
+	outputDistance,
+	tmpDistance,
+	startBtn,
+	permutationSpan,
+	populationSize = 30,
+	data = data40,
+	stop = false,
+	crossoverFactor = 0.4,
+	mutationFactor = 0.4,
+	actualBest,
+	countSpan,
+	maxGenerations = 400,
+	recordList;
 // try with data40 maxgen 10 and 100
 var counter = 0;
 
@@ -85,18 +85,7 @@ function getPermutationDistance(permutation) {
 		}
 		tmpDistance += getDistance(permutation[i], permutation[i+1]);
 	}
-	// console.log(tmpDistance);
-	// changeOutput();
 	return tmpDistance;
-}
-
-function changeOutput() {
-	if (!outputDistance) {
-		outputDistance = tmpDistance;
-	}
-	if (outputDistance > tmpDistance) {
-		outputDistance = tmpDistance;
-	}
 }
 
 function primitiveRandRange(a, b) {
@@ -191,12 +180,11 @@ function crossover(perm1, perm2) {
 
 function init() {
 	startBtn = document.getElementById("start");
-	distanceSpan = document.getElementById("distance");
 	permutationSpan = document.getElementById("permutation");
 	countSpan = document.getElementById("generationCount");
+	recordList = document.getElementById("records");
 	c = document.getElementById("myCanvas");
 	ctx  = c.getContext("2d");
-	data = data200;
 	data.forEach(function(point, inds) {
 		drawPoint(point.x, point.y);
 		fillMotherArr(point);
@@ -223,7 +211,7 @@ function buildFirstGeneration() {
 	for (var k = 0; k <= populationSize - 1; k++) {
 		populationPermutations[k].forEach(function(el, i) { populationPermutations[k][i] = +populationPermutations[k][i]});
 	}
-	return sortGeneration(populationDistances, generationMap, populationPermutations);
+	sortGeneration(populationDistances, generationMap, populationPermutations);
 }
 
 function sortGeneration(distances, distanceIndexMap, generation) {
@@ -234,18 +222,24 @@ function sortGeneration(distances, distanceIndexMap, generation) {
 		index = distanceIndexMap.get(distances[k]);
 		tmp.push(generation[index]);
 	}
-	var distCandidate = getPermutationDistance(tmp[0]);
+	checkNewGeneration(tmp);
+}
+
+function checkNewGeneration(sortedGeneration) {
+	var distCandidate = getPermutationDistance(sortedGeneration[0]);
 	if (actualBest === undefined || actualBest > distCandidate) {
-		drawPermutation(tmp[0]);
-		distanceSpan.innerHTML = distCandidate;
 		actualBest = distCandidate;
+		// postMessage("ranklist", counter, actualBest, sortedGeneration[0]);
+		var li = document.createElement("li");
+		li.innerHTML = "Gen: " + counter + " - " + actualBest;
+		recordList.insertBefore(li, recordList.childNodes[0]);
+		drawPermutation(sortedGeneration[0]);
 	}
-	while (counter < maxGenerations) {
+	while (counter < maxGenerations - 1) {
 		counter++;
-		buildNextGeneration(tmp);
+		buildNextGeneration(sortedGeneration);
 	}
-	countSpan.innerHTML = counter;
-	// return tmp;
+	countSpan.innerHTML = "Amount of all generations:" + (counter + 1);
 }
 
 function buildNextGeneration(initGeneration) {
@@ -271,10 +265,7 @@ function buildNextGeneration(initGeneration) {
 		newGeneration.push(child);
 	});
 
-
-
 	var populationDistances = [],
-		tmpPermutation = [],
 		generationMap = new Map(),
 		tmpDistance;
 	for (var j = 0; j <= populationSize - 1; j++) {
@@ -282,12 +273,7 @@ function buildNextGeneration(initGeneration) {
 		populationDistances.push(tmpDistance);
 		generationMap.set(tmpDistance, j);
 	}
-	return sortGeneration(populationDistances, generationMap, newGeneration);
-
-}
-
-function stop() {
-	stop = true;
+	sortGeneration(populationDistances, generationMap, newGeneration);
 }
 
 function start() {
