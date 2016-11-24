@@ -3,7 +3,8 @@
 <head>
 	<title>Solving TSP problem</title>
 	<script src="./data.js"></script>
-	<script src="./main.js"></script></head>
+	<script src="./main.js"></script>
+</head>
 <body>
 	<canvas id="myCanvas" width="1000" height="800" style="border:1px solid #d3d3d3;">
 	Your browser does not support the HTML5 canvas tag.</canvas>
@@ -11,12 +12,40 @@
     position: absolute;
     left: 1010px;
     top: 0;">
+
 		<button id="start" onclick="start()">Start</button>
 		<span id="generationCount"></span>
 		<ul id="records"></ul>
 	</div>
+	<div id="controls">
+		<label for="crossoverFactor">Crossover Factor</label>
+		<input value="0.4" type="number" min="0.1" max="1" step="0.1" id="crossoverFactorId" name="crossoverFactor">
+		<label for="mutationFactor">Mutation Factor</label>
+		<input value="0.4" type="number" min="0.1" max="1" step="0.1" id="mutationFactorId" name="mutationFactor">
+		<label for="maxGenerations">Max Generations</label>
+		<input value="400" type="number" id="maxGenerationsId" name="maxGenerations">
+		<label for="populationSize">Population size</label>
+		<input value="30" type="number" id="populationSizeId" name="populationSize">
+		<label for="data">Population size</label>
+		<select id="dataId" name="data" value="40">
+			<option value="10">10</option>
+			<option value="40" selected>40</option>
+			<option value="200">200</option>
+		</select>
+		<button id="Change" onclick="init()">Change</button>
+	</div>
 	<script type="text/javascript">
 		init();
-</script>
+	</script>
+	<style type="text/css">
+		div#controls {
+			position: absolute;
+			left: 1300px;
+			top: 0px;
+		}
+		div#controls input {
+		    display: block;
+		}
+	</style>
 </body>
 </html>

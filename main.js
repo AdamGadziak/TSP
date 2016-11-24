@@ -5,17 +5,58 @@ var motherArr = [],
 	tmpDistance,
 	startBtn,
 	permutationSpan,
-	populationSize = 30,
-	data = data40,
-	stop = false,
-	crossoverFactor = 0.4,
-	mutationFactor = 0.4,
+	populationSize,
+	data,
+	crossoverFactor,
+	mutationFactor,
 	actualBest,
 	countSpan,
-	maxGenerations = 400,
-	recordList;
-// try with data40 maxgen 10 and 100
-var counter = 0;
+	maxGenerations,
+	recordList,
+	counter;
+// try with data40 maxgen 10 and 100;
+
+function init() {
+	motherArr = [],
+	outputDistance = undefined;
+	tmpDistance = undefined;
+	populationSize = undefined;
+	data = undefined;
+	crossoverFactor = undefined;
+	mutationFactor = undefined;
+	actualBest = undefined;
+	maxGenerations = undefined;
+	counter = 0;
+	getFactors();
+	generationCount.innerHTML = "";
+	records.innerHTML = "";
+	startBtn = document.getElementById("start");
+	permutationSpan = document.getElementById("permutation");
+	countSpan = document.getElementById("generationCount");
+	recordList = document.getElementById("records");
+	c = document.getElementById("myCanvas");
+	ctx  = c.getContext("2d");
+	ctx.clearRect(0, 0, c.width, c.height);
+	counter = 0;
+	data.forEach(function(point, inds) {
+		drawPoint(point.x, point.y);
+		fillMotherArr(point);
+	});
+}
+
+
+
+function getFactors() {
+	var domInputs = ["crossoverFactorId", "mutationFactorId", "maxGenerationsId", "populationSizeId", "dataId"];
+	domInputs.forEach(function(input, i) {
+		var ref = input.slice(0, -2);
+		if (ref === "data") {
+			window[ref] = window["data" + document.getElementById(input).value];
+		} else {
+			window[ref] = +document.getElementById(input).value;
+		}
+	});
+}
 
 function fillMotherArr(point) {
 	var tmp = [];
@@ -178,19 +219,6 @@ function crossover(perm1, perm2) {
     return [newPerm1, newPerm2];
 }
 
-function init() {
-	startBtn = document.getElementById("start");
-	permutationSpan = document.getElementById("permutation");
-	countSpan = document.getElementById("generationCount");
-	recordList = document.getElementById("records");
-	c = document.getElementById("myCanvas");
-	ctx  = c.getContext("2d");
-	data.forEach(function(point, inds) {
-		drawPoint(point.x, point.y);
-		fillMotherArr(point);
-	});
-}
-
 function buildFirstGeneration() {
 	var perm = [];
 	for (var i = 0; i <= data.length - 1; i++) {
@@ -277,5 +305,6 @@ function buildNextGeneration(initGeneration) {
 }
 
 function start() {
+	init();
 	buildFirstGeneration();
 }
