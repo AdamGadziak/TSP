@@ -221,6 +221,7 @@ function crossover(perm1, perm2) {
 
 function buildFirstGeneration() {
 	var perm = [];
+	// build first naive permutation
 	for (var i = 0; i <= data.length - 1; i++) {
 		perm[i] = i;
 	}
@@ -229,6 +230,9 @@ function buildFirstGeneration() {
 		tmpPermutation = [],
 		generationMap = new Map(),
 		tmpDistance;
+	// create as much permutations as we want to population be
+	// count rheir distance and push to array of distances from population
+	// create map with key as distance and value as index of permutation from population index
 	for (var j = 0; j <= populationSize - 1; j++) {
 		tmpPermutation = shuffle(perm);
 		populationPermutations.push(tmpPermutation.join().split(","));
@@ -236,33 +240,42 @@ function buildFirstGeneration() {
 		populationDistances.push(tmpDistance);
 		generationMap.set(tmpDistance, j);
 	}
+	// little hack for that reference? bug array push
 	for (var k = 0; k <= populationSize - 1; k++) {
 		populationPermutations[k].forEach(function(el, i) { populationPermutations[k][i] = +populationPermutations[k][i]});
 	}
+	// lets sort those permutations to get the best ones
 	sortGeneration(populationDistances, generationMap, populationPermutations);
 }
 
 function sortGeneration(distances, distanceIndexMap, generation) {
+	// srot array of distances ascending direction
 	distances.sort(function(a, b){return a-b});
 	var tmp = [],
 		index;
+	// use sorted distances to sort array of permutations from that generation
 	for (var k = 0; k <= populationSize - 1; k++) {
 		index = distanceIndexMap.get(distances[k]);
 		tmp.push(generation[index]);
 	}
+	// return to check sorted by distance array of permutations
 	checkNewGeneration(tmp);
 }
 
 function checkNewGeneration(sortedGeneration) {
+	// get distance of the best candidate permutation
 	var distCandidate = getPermutationDistance(sortedGeneration[0]);
+	// check if our candidate is better than previous
 	if (actualBest === undefined || actualBest > distCandidate) {
 		actualBest = distCandidate;
 		// postMessage("ranklist", counter, actualBest, sortedGeneration[0]);
 		var li = document.createElement("li");
 		li.innerHTML = "Gen: " + counter + " - " + actualBest;
 		recordList.insertBefore(li, recordList.childNodes[0]);
+	// draw new record permutation
 		drawPermutation(sortedGeneration[0]);
 	}
+	// lets start with mutations crossovers and selections
 	while (counter < maxGenerations - 1) {
 		counter++;
 		buildNextGeneration(sortedGeneration);
@@ -276,23 +289,42 @@ function buildNextGeneration(initGeneration) {
 		mutCandSize = Math.floor((crossCandSize * 2) * (mutationFactor / 2)) * 2;
 	var arrOfChildren = [],
 		tmp;
+
+	// !!!!
+	// Crossover
+	// !!!!
+	// crossover our best scored permutations each other
+	// use PMX or OX maybe someday EX
 	for (var j = 0; j <= crossCandSize; j += 2) {
 		tmp = crossover(newGeneration[j], newGeneration[j+1]);
 		arrOfChildren.push(tmp[0]);
 		arrOfChildren.push(tmp[1]);
 	}
+	// !!!!
+	// Selection
+	// !!!!
+	// remove the worst scored permutations and change them with new born children
 	for (var i = 0; i <= arrOfChildren.length - 1; i++) {
 		newGeneration.pop();
 	}
 	var index;
+
+	// !!!!
+	// Mutation inversion mutation
+	// !!!!
+	// depends on how many mutation we want to make mutate random new borns
 	for (var k = 0; k <= mutCandSize - 1; k++) {
 		index = primitiveRandRange(0, arrOfChildren.length - 1);
 		arrOfChildren[index] = mutation(arrOfChildren[index]);
 	}
+
+	// !!!!
+	// Selection
+	// !!!!
 	arrOfChildren.forEach(function(child) {
 		newGeneration.push(child);
 	});
-
+	// prepare new generation with their distances to sort and etc.
 	var populationDistances = [],
 		generationMap = new Map(),
 		tmpDistance;
