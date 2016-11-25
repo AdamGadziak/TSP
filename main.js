@@ -17,7 +17,7 @@ var motherArr = [],
 // try with data40 maxgen 10 and 100;
 
 function init() {
-	motherArr = [],
+	motherArr = [];
 	outputDistance = undefined;
 	tmpDistance = undefined;
 	populationSize = undefined;
@@ -263,11 +263,14 @@ function checkNewGeneration(sortedGeneration) {
 		recordList.insertBefore(li, recordList.childNodes[0]);
 		drawPermutation(sortedGeneration[0]);
 	}
-	while (counter < maxGenerations - 1) {
-		counter++;
-		buildNextGeneration(sortedGeneration);
-	}
-	countSpan.innerHTML = "Amount of all generations:" + (counter + 1);
+	setTimeout(function() {
+		console.log("next");
+		if (counter < maxGenerations - 1) {
+			counter++;
+			buildNextGeneration(sortedGeneration);
+		} 
+		countSpan.innerHTML = "Amount of all generations:" + (counter + 1);
+	},10);
 }
 
 function buildNextGeneration(initGeneration) {
