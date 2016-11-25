@@ -17,7 +17,7 @@ var motherArr = [],
 // try with data40 maxgen 10 and 100;
 
 function init() {
-	motherArr = [],
+	motherArr = [];
 	outputDistance = undefined;
 	tmpDistance = undefined;
 	populationSize = undefined;
@@ -275,12 +275,14 @@ function checkNewGeneration(sortedGeneration) {
 	// draw new record permutation
 		drawPermutation(sortedGeneration[0]);
 	}
+	setTimeout(function() {
 	// lets start with mutations crossovers and selections
-	while (counter < maxGenerations - 1) {
-		counter++;
-		buildNextGeneration(sortedGeneration);
-	}
-	countSpan.innerHTML = "Amount of all generations:" + (counter + 1);
+		if (counter < maxGenerations - 1) {
+			counter++;
+			buildNextGeneration(sortedGeneration);
+		} 
+		countSpan.innerHTML = "Amount of all generations:" + (counter + 1);
+	},10);
 }
 
 function buildNextGeneration(initGeneration) {
